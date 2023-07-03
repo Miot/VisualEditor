@@ -1,2 +1,2 @@
 # VisualEditor
-低代码
+view here: https://miot.github.io/VisualEditor/dist/
