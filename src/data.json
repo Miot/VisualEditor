@@ -1,0 +1,26 @@
+{
+  "container": {
+    "width": "550",
+    "height": "550"
+  },
+  "blocks": [
+    {
+      "top": 100,
+      "left": 100,
+      "zIndex": 1,
+      "type": "text"
+    },
+    {
+      "top": 200,
+      "left": 100,
+      "zIndex": 1,
+      "type": "button"
+    },
+    {
+      "top": 300,
+      "left": 100,
+      "zIndex": 1,
+      "type": "input"
+    }
+  ]
+}
