@@ -1,3 +1,4 @@
+import { events } from "../utils/events";
 export function useMenuDragger(containerRef, data) {
   let curComponent = null;
   const dragenter = (e) => {
@@ -16,7 +17,7 @@ export function useMenuDragger(containerRef, data) {
       zIndex: 1,
       type: curComponent.type,
       alignCenter: true,
-    })
+    });
   };
   const dragstart = (e, component) => {
     curComponent = component;
@@ -25,6 +26,7 @@ export function useMenuDragger(containerRef, data) {
     container.addEventListener("dragover", dragover);
     container.addEventListener("dragleave", dragleave);
     container.addEventListener("drop", drop);
+    events.emit("start");
   };
   const dragend = () => {
     const container = containerRef.value;
@@ -32,7 +34,7 @@ export function useMenuDragger(containerRef, data) {
     container.removeEventListener("dragover", dragover);
     container.removeEventListener("dragleave", dragleave);
     container.removeEventListener("drop", drop);
-    // curComponent = null;
+    events.emit("end");
   };
 
   return { dragstart, dragend };

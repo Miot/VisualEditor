@@ -4,7 +4,7 @@
   &-left, &-right {
     position: absolute;
     width: 270px;
-    background-color: red;
+    border: 3px solid yellowgreen;
     top: 0;
     bottom: 0;
   }
@@ -54,8 +54,23 @@
     position: absolute;
     right: 280px;
     left: 280px;
-    height: 80px;
-    background-color: blue;
+    display: flex;
+    border: 2px solid gray;
+    &-button {
+      cursor: pointer;
+      height: 60px;
+      padding: 0 5px;
+      line-height: 60px;
+      text-align: center;
+      user-select: none;
+      &+& {
+        margin-left: 5px;
+      }
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.2);
+        color: black;
+      }
+    }
   }
   &-container {
     padding: 80px 270px 0;

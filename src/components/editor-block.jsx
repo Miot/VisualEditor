@@ -1,4 +1,11 @@
-import { computed, defineComponent, inject, ref, onMounted, reactive } from "vue";
+import {
+  computed,
+  defineComponent,
+  inject,
+  ref,
+  onMounted,
+  reactive,
+} from "vue";
 
 export default defineComponent({
   props: {
@@ -7,9 +14,9 @@ export default defineComponent({
   setup(props) {
     const block = reactive(props?.data);
     const blockStyles = computed(() => ({
-      top: `${block.top}px`,
-      left: `${block.left}px`,
-      zIndex: `${block.zIndex}`,
+      top: `${props.data.top}px`,
+      left: `${props.data.left}px`,
+      zIndex: `${props.data.zIndex}`,
     }));
     const config = inject("config");
 
@@ -19,9 +26,9 @@ export default defineComponent({
       //  拖拽松手时时居中
       const { offsetWidth, offsetHeight } = blockRef.value;
       if (needAlignCenter.value) {
-        block.left -= offsetWidth / 2,
-        block.top -= offsetHeight / 2,
-        needAlignCenter.value = false
+        (block.left -= offsetWidth / 2),
+          (block.top -= offsetHeight / 2),
+          (needAlignCenter.value = false);
       }
       block.width = offsetWidth;
       block.height = offsetHeight;

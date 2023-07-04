@@ -1,16 +1,20 @@
+import { events } from "@/utils/events";
 import { computed, reactive, ref } from "vue";
 
 export function useBlockDragger(data) {
-  let curIndex = ref(-1);
+  const curIndex = ref(-1);
   const lastSelectedBlock = computed(() => data.value.blocks[curIndex.value]);
+  const selectedStatus = computed(() => {
+    return {
+      selected: data.value.blocks.filter((block) => block.selected),
+      unselected: data.value.blocks.filter((block) => !block.selected),
+    };
+  });
 
   const blcokMousedown = (e, block, idx) => {
     e.preventDefault();
     e.stopPropagation();
-    curIndex.value = idx;
-    const selectedCount = data.value.blocks.filter(
-      (block) => block.selected
-    ).length;
+    const selectedCount = selectedStatus.value.selected.length;
     if (e.shiftKey) {
       block.selected = !block.selected;
     } else {
@@ -19,22 +23,18 @@ export function useBlockDragger(data) {
         block.selected = true;
       }
     }
+    curIndex.value = idx;
     handleMoveSelectedBlocks(e);
   };
   const clearMousedown = () => {
     data.value.blocks.forEach((block) => (block.selected = false));
   };
-  const selectedStatus = computed(() => {
-    return {
-      selected: data.value.blocks.filter((block) => block.selected),
-      unselected: data.value.blocks.filter((block) => !block.selected),
-    };
-  });
 
   // 拖拽所选组件
   let dragState = {
     startX: 0,
     startY: 0,
+    dragging: false,
   };
   let markLine = reactive({
     x: null,
@@ -45,6 +45,7 @@ export function useBlockDragger(data) {
       lastSelectedBlock.value;
 
     dragState = {
+      dragging: false,
       startX: e.clientX,
       startY: e.clientY, // 每一个选中的位置
       startLeft: lastSelectedBlock.value.left,
@@ -54,9 +55,17 @@ export function useBlockDragger(data) {
         left,
       })),
       lines: (() => {
-        const { unselected } = selectedStatus.value;
+        const { unselected } = selectedStatus.value; // 获取其他没选中的以他们的位置做辅助线
         let lines = { x: [], y: [] };
-        unselected.forEach((block) => {
+        [
+          ...unselected,
+          {
+            top: 0,
+            left: 0,
+            width: data.value.container.width,
+            height: data.value.container.height,
+          },
+        ].forEach((block) => {
           const {
             top: unselectedTop,
             left: unselectedLeft,
@@ -107,6 +116,11 @@ export function useBlockDragger(data) {
   };
   const moveSelectedBlocks = (e) => {
     let { clientX: moveX, clientY: moveY } = e;
+    if (!dragState.dragging) {
+      dragState.dragging = true;
+      events.emit("start"); // 记录拖拽前的位置
+    }
+
     // 显示标准线
     const moveLeft = moveX - dragState.startX + dragState.startLeft;
     const moveTop = moveY - dragState.startY + dragState.startTop;
@@ -138,16 +152,22 @@ export function useBlockDragger(data) {
 
     const durX = moveX - dragState.startX;
     const durY = moveY - dragState.startY;
-    selectedStatus.value.selected.forEach((block, idx) => {
-      block.top = dragState.startPos[idx].top + durY;
-      block.left = dragState.startPos[idx].left + durX;
-    });
+    data.value.blocks
+      .filter((block) => block.selected)
+      .forEach((block, idx) => {
+        block.top = dragState.startPos[idx].top + durY;
+        block.left = dragState.startPos[idx].left + durX;
+      });
   };
   const setSelectedBlocks = (e) => {
     document.removeEventListener("mousemove", moveSelectedBlocks);
     document.removeEventListener("mouseup", setSelectedBlocks);
     markLine.x = null;
     markLine.y = null;
+    if (dragState.dragging) {
+      events.emit("end");
+      dragState.dragging = false;
+    }
   };
 
   return { blcokMousedown, clearMousedown, markLine };

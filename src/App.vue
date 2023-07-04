@@ -1,18 +1,18 @@
 <template>
   <div class="app">
-    <editorHost v-model="state"></editorHost>
+    <VisualEditor v-model="state" />
   </div>
 </template>
 
 <script>
 import { ref, provide } from "vue";
 import data from "./data.json";
-import editorHost from "./packages/editor-host";
+import VisualEditor from "./components/visual-editor";
 import { registerConfig as config } from "./utils/editor-config";
 
 export default {
   components: {
-    editorHost
+    VisualEditor
   },
   setup() {
     const state = ref(data);

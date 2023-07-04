@@ -1,10 +1,10 @@
 import { computed, defineComponent, inject, ref } from "vue";
-import "./editor-host.less";
-import editorBlock from "./editor-block";
-import prewviewItem from "./preview-item";
-import deepcopy from "deepcopy";
+import "./editor.less";
+import EditorBlock from "./editor-block";
+import clone from "nanoclone";
 import { useMenuDragger } from "../hooks/useMenuDragger";
 import { useBlockDragger } from "../hooks/useBlockDragger";
+import { useCommand } from "@/hooks/useCommand";
 
 export default defineComponent({
   props: {
@@ -12,8 +12,7 @@ export default defineComponent({
   },
   emits: ["update:modelValue"],
   components: {
-    editorBlock,
-    prewviewItem,
+    EditorBlock,
   },
   setup(props, ctx) {
     const config = inject("config");
@@ -22,7 +21,7 @@ export default defineComponent({
         return props.modelValue;
       },
       set(newVal) {
-        ctx.emit("update:modelValue", deepcopy(newVal));
+        ctx.emit("update:modelValue", clone(newVal));
       },
     });
     const containerStyle = computed(() => ({
@@ -35,7 +34,13 @@ export default defineComponent({
     const { dragstart, dragend } = useMenuDragger(containerRef, data);
     // 拖拽选中画布中的组件
     const { blcokMousedown, clearMousedown, markLine } = useBlockDragger(data);
-    
+    // 顶部菜单
+    const { commands } = useCommand(data);
+    const buttons = [
+      { label: "上一步", handler: () => commands.undo() },
+      { label: "撤销上一步", handler: () => commands.redo() },
+    ];
+
     return () => (
       <div class="editor">
         <div class="editor-left">
@@ -43,15 +48,23 @@ export default defineComponent({
             <div
               class="preview-item"
               draggable
-              ondragstart={(e) => dragstart(e, component)}
-              ondragend={(e) => dragend(e, component)}
+              onDragstart={(e) => dragstart(e, component)}
+              onDragend={dragend}
             >
               <span class="name">{component.label}</span>
               <div class="component">{component.preview()}</div>
             </div>
           ))}
         </div>
-        <div class="editor-top">菜单</div>
+        <div class="editor-top">
+          {buttons.map((btn) => {
+            return (
+              <div class="editor-top-button" onClick={btn.handler}>
+                <span>{btn.label}</span>
+              </div>
+            );
+          })}
+        </div>
         <div class="editor-right">右侧</div>
         <div class="editor-container">
           <div class="editor-canvas">
@@ -62,15 +75,19 @@ export default defineComponent({
               onmousedown={clearMousedown}
             >
               {data.value.blocks.map((block, index) => (
-                <editorBlock
+                <EditorBlock
                   class={block.selected ? "editor-block-selected" : ""}
                   data={block}
                   onmousedown={(e) => blcokMousedown(e, block, index)}
                 />
               ))}
 
-              {markLine.x !== null && <div class="line-x" style={{left: markLine.x + 'px'}}></div>}
-              {markLine.y !== null && <div class="line-y" style={{top: markLine.y + 'px'}}></div>}
+              {markLine.x !== null && (
+                <div class="line-x" style={{ left: markLine.x + "px" }}></div>
+              )}
+              {markLine.y !== null && (
+                <div class="line-y" style={{ top: markLine.y + "px" }}></div>
+              )}
             </div>
           </div>
         </div>
