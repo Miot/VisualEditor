@@ -34,7 +34,7 @@ export default defineComponent({
     const containerRef = ref(null);
     const { dragstart, dragend } = useMenuDragger(containerRef, data);
     // 拖拽选中画布中的组件
-    const { blcokMousedown, clearMousedown } = useBlockDragger(data);
+    const { blcokMousedown, clearMousedown, markLine } = useBlockDragger(data);
     
     return () => (
       <div class="editor">
@@ -61,13 +61,16 @@ export default defineComponent({
               ref={containerRef}
               onmousedown={clearMousedown}
             >
-              {data.value.blocks.map((block) => (
+              {data.value.blocks.map((block, index) => (
                 <editorBlock
                   class={block.selected ? "editor-block-selected" : ""}
                   data={block}
-                  onmousedown={(e) => blcokMousedown(e, block)}
+                  onmousedown={(e) => blcokMousedown(e, block, index)}
                 />
               ))}
+
+              {markLine.x !== null && <div class="line-x" style={{left: markLine.x + 'px'}}></div>}
+              {markLine.y !== null && <div class="line-y" style={{top: markLine.y + 'px'}}></div>}
             </div>
           </div>
         </div>

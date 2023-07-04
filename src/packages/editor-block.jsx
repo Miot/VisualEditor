@@ -23,6 +23,8 @@ export default defineComponent({
         block.top -= offsetHeight / 2,
         needAlignCenter.value = false
       }
+      block.width = offsetWidth;
+      block.height = offsetHeight;
     });
     return () => {
       const component = config.componentMap[props.data.type];
