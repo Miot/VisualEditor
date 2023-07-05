@@ -1,7 +1,7 @@
 import { events } from "@/utils/events";
 import { computed, reactive, ref } from "vue";
 
-export function useBlockDragger(data) {
+export function useBlockDragger(data, isPreviewing) {
   const curIndex = ref(-1);
   const lastSelectedBlock = computed(() => data.value.blocks[curIndex.value]);
   const selectedStatus = computed(() => {
@@ -12,6 +12,7 @@ export function useBlockDragger(data) {
   });
 
   const blcokMousedown = (e, block, idx) => {
+    if (isPreviewing.value) return;
     e.preventDefault();
     e.stopPropagation();
     const selectedCount = selectedStatus.value.selected.length;
@@ -19,14 +20,15 @@ export function useBlockDragger(data) {
       block.selected = !block.selected;
     } else {
       if (!block.selected) {
-        if (selectedCount >= 1) clearMousedown();
+        if (selectedCount >= 1) clearFocus();
         block.selected = true;
       }
     }
     curIndex.value = idx;
     handleMoveSelectedBlocks(e);
   };
-  const clearMousedown = () => {
+  const clearFocus = () => {
+    if (isPreviewing.value) return;
     data.value.blocks.forEach((block) => (block.selected = false));
   };
 
@@ -170,5 +172,5 @@ export function useBlockDragger(data) {
     }
   };
 
-  return { blcokMousedown, clearMousedown, markLine, selectedStatus };
+  return { blcokMousedown, clearFocus, markLine, selectedStatus };
 }

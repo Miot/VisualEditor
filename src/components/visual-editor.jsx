@@ -29,13 +29,14 @@ export default defineComponent({
       width: data.value.container.width + "px",
       height: data.value.container.height + "px",
     }));
+    const previewing = ref(false); // 预览/编辑状态切换
 
     // 从左侧拖拽组件到画布
     const containerRef = ref(null);
     const { dragstart, dragend } = useMenuDragger(containerRef, data);
     // 拖拽选中画布中的组件
-    const { blcokMousedown, clearMousedown, markLine, selectedStatus } =
-      useBlockDragger(data);
+    const { blcokMousedown, clearFocus, markLine, selectedStatus } =
+      useBlockDragger(data, previewing);
     // 顶部菜单
     const { commands } = useCommand(data, selectedStatus);
     const buttons = [
@@ -74,11 +75,19 @@ export default defineComponent({
           });
         },
       },
+      {
+        label: () => (previewing.value ? "编辑" : "预览"),
+        steady: true,
+        handler: () => {
+          previewing.value = !previewing.value;
+          clearFocus();
+        },
+      },
     ];
 
     return () => (
       <div class="editor">
-        <div class="editor-left">
+        <div class="editor-left" v-show={!previewing.value}>
           {config.componentList.map((component) => (
             <div
               class="preview-item"
@@ -94,20 +103,29 @@ export default defineComponent({
         <div class="editor-top">
           {buttons.map((btn) => {
             return (
-              <div class="editor-top-button" onClick={btn.handler}>
-                <span>{btn.label}</span>
+              <div
+                v-show={!previewing.value || btn.steady}
+                class="editor-top-button"
+                onClick={btn.handler}
+              >
+                <span>
+                  {typeof btn.label === "function" ? btn.label() : btn.label}
+                </span>
               </div>
             );
           })}
         </div>
-        <div class="editor-right">右侧</div>
+        <div class="editor-right" v-show={!previewing.value}>
+          右侧
+        </div>
         <div class="editor-container">
           <div class="editor-canvas">
             <div
               class="editor-canvas-content"
               style={containerStyle.value}
               ref={containerRef}
-              onmousedown={clearMousedown}
+              onmousedown={clearFocus}
+              v-show={!previewing.value}
             >
               {data.value.blocks.map((block, index) => (
                 <EditorBlock
@@ -123,6 +141,17 @@ export default defineComponent({
               {markLine.y !== null && (
                 <div class="line-y" style={{ top: markLine.y + "px" }}></div>
               )}
+            </div>
+
+            <div
+              class="editor-canvas-content"
+              style={containerStyle.value}
+              ref={containerRef}
+              v-show={previewing.value}
+            >
+              {data.value.blocks.map((block, index) => (
+                <EditorBlock class="editor-block-preview" data={block} />
+              ))}
             </div>
           </div>
         </div>
