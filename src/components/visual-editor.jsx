@@ -5,6 +5,7 @@ import clone from "nanoclone";
 import { useMenuDragger } from "../hooks/useMenuDragger";
 import { useBlockDragger } from "../hooks/useBlockDragger";
 import { useCommand } from "@/hooks/useCommand";
+import { $dialog } from "./layout-dialog";
 
 export default defineComponent({
   props: {
@@ -39,6 +40,27 @@ export default defineComponent({
     const buttons = [
       { label: "上一步", handler: () => commands.undo() },
       { label: "撤销上一步", handler: () => commands.redo() },
+      {
+        label: "导入JSON",
+        handler: () => {
+          $dialog({
+            title: "导出完成",
+            hasFooter: true,
+            onConfirm(json) {
+              commands.updateContainer(JSON.parse(json));
+            },
+          });
+        },
+      },
+      {
+        label: "导出JSON",
+        handler: () => {
+          $dialog({
+            title: "导出完成",
+            content: JSON.stringify(data.value),
+          });
+        },
+      },
     ];
 
     return () => (

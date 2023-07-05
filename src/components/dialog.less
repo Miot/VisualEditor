@@ -1,0 +1,61 @@
+.modal {
+  .tit {
+    font-size: 20px;
+    margin:0;
+  }
+  .close .bt {
+    position:absolute;
+    right:5px;
+    top:5px;
+    background:none;
+    color:#ccc;
+    padding:5px 10px;
+    border:0;
+    &:before {
+      content: "×";
+      color: black;
+    }
+  }
+  &:before {
+    display: block;
+    content: "";
+    background: rgba(0, 0, 0, 0.6);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+  }
+}
+
+.dialog-modal {
+  background: #fefefe;
+  border-radius: 5px;
+  position: fixed;
+  max-width: 600px;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  top: 20%;
+  z-index: 2;
+  word-wrap: break-word;
+}
+.content-modal {
+  padding: 20px;
+  textarea {
+    width: 100%;
+    min-height: 200px;
+    font-size: 15px;
+  }
+}
+.header-modal {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+.footer-modal {
+  text-align: right;
+  height: 30px;
+  line-height: 30px;
+  padding-right: 30px;
+}
