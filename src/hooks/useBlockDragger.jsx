@@ -170,5 +170,5 @@ export function useBlockDragger(data) {
     }
   };
 
-  return { blcokMousedown, clearMousedown, markLine };
+  return { blcokMousedown, clearMousedown, markLine, selectedStatus };
 }

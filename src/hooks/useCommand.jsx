@@ -2,7 +2,7 @@ import clone from "nanoclone";
 import { events } from "../utils/events";
 import { reactive, onUnmounted } from "vue";
 
-export function useCommand(inputData) {
+export function useCommand(inputData, selectedData) {
   const data = reactive(inputData);
   const state = {
     //前进后退指针
@@ -107,6 +107,60 @@ export function useCommand(inputData) {
         },
         undo: () => {
           data.value = stete.before;
+        },
+      };
+    },
+  });
+
+  registry({
+    name: "placeTop",
+    pushQueue: true,
+    execute() {
+      const before = clone(data.value.blocks);
+      const after = (() => {
+        const { selected, unselected } = selectedData.value;
+        const maxIndex = unselected.reduce((prev, block) => {
+          return Math.max(prev, block.zIndex);
+        }, -Number.MIN_SAFE_INTEGER);
+        selected.forEach((block) => (block.zIndex = maxIndex + 1));
+        return data.value.blocks;
+      })();
+      return {
+        redo: () => {
+          data.value = { ...data.value, blocks: after };
+        },
+        undo: () => {
+          data.value = { ...data.value, blocks: before };
+        },
+      };
+    },
+  });
+  registry({
+    name: "placeBottom",
+    pushQueue: true,
+    execute() {
+      const before = clone(data.value.blocks);
+      const after = (() => {
+        const { selected, unselected } = selectedData.value;
+        let minIndex =
+          unselected.reduce((prev, block) => {
+            return Math.min(prev, block.zIndex);
+          }, Number.MAX_SAFE_INTEGER) - 1;
+        if (minIndex < 0) {
+          const dur = Math.abs(minIndex);
+          minIndex = 0;
+          unselected.forEach((block) => (block.zIndex += dur));
+        }
+        selected.forEach((block) => (block.zIndex = minIndex));
+        console.log(unselected);
+        return data.value.blocks;
+      })();
+      return {
+        redo: () => {
+          data.value = { ...data.value, blocks: after };
+        },
+        undo: () => {
+          data.value = { ...data.value, blocks: before };
         },
       };
     },

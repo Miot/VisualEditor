@@ -34,12 +34,21 @@ export default defineComponent({
     const containerRef = ref(null);
     const { dragstart, dragend } = useMenuDragger(containerRef, data);
     // 拖拽选中画布中的组件
-    const { blcokMousedown, clearMousedown, markLine } = useBlockDragger(data);
+    const { blcokMousedown, clearMousedown, markLine, selectedStatus } =
+      useBlockDragger(data);
     // 顶部菜单
-    const { commands } = useCommand(data);
+    const { commands } = useCommand(data, selectedStatus);
     const buttons = [
       { label: "上一步", handler: () => commands.undo() },
       { label: "撤销上一步", handler: () => commands.redo() },
+      {
+        label: "置顶",
+        handler: () => commands.placeTop(),
+      },
+      {
+        label: "置底",
+        handler: () => commands.placeBottom(),
+      },
       {
         label: "导入JSON",
         handler: () => {
