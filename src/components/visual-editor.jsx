@@ -42,6 +42,10 @@ export default defineComponent({
       { label: "上一步", handler: () => commands.undo() },
       { label: "撤销上一步", handler: () => commands.redo() },
       {
+        label: "删除",
+        handler: () => commands.del(),
+      },
+      {
         label: "置顶",
         handler: () => commands.placeTop(),
       },

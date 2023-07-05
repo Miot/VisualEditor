@@ -166,6 +166,23 @@ export function useCommand(inputData, selectedData) {
     },
   });
 
+  registry({
+    name: "del",
+    pushQueue: true,
+    execute() {
+      const before = clone(data.value.blocks);
+      const after = selectedData.value.unselected;
+      return {
+        redo: () => {
+          data.value = { ...data.value, blocks: after };
+        },
+        undo: () => {
+          data.value = { ...data.value, blocks: before };
+        },
+      };
+    },
+  });
+
   const keyboardEvent = (() => {
     const keyCodes = {
       90: "z",
