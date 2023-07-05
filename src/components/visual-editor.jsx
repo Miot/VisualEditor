@@ -146,7 +146,6 @@ export default defineComponent({
             <div
               class="editor-canvas-content"
               style={containerStyle.value}
-              ref={containerRef}
               v-show={previewing.value}
             >
               {data.value.blocks.map((block, index) => (
