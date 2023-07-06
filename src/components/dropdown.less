@@ -1,0 +1,18 @@
+.dropdown {
+  position: absolute;
+  background-color: white;
+  border: 2px solid #ccc;
+  &-item {
+    cursor: pointer;
+    user-select: none;
+    line-height: 30px;
+    width: 80px;
+    padding-left: 20px;
+    &:hover {
+      background-color: yellowgreen;
+    }
+    &+& {
+      border-top: 1px solid #ccc;
+    }
+  }
+}

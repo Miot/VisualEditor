@@ -6,6 +6,7 @@ import { useMenuDragger } from "../hooks/useMenuDragger";
 import { useBlockDragger } from "../hooks/useBlockDragger";
 import { useCommand } from "@/hooks/useCommand";
 import { $dialog } from "./layout-dialog";
+import { $dropdown, DropdownItem } from "./layout-dropdown";
 
 export default defineComponent({
   props: {
@@ -14,6 +15,7 @@ export default defineComponent({
   emits: ["update:modelValue"],
   components: {
     EditorBlock,
+    DropdownItem,
   },
   setup(props, ctx) {
     const config = inject("config");
@@ -84,6 +86,52 @@ export default defineComponent({
         },
       },
     ];
+    // 右键菜单
+    const onContextmenu = (e, block) => {
+      e.preventDefault();
+      $dropdown({
+        event: e,
+        content: () => {
+          return (
+            <>
+              <DropdownItem
+                label="删除"
+                onClick={() => commands.del()}
+              ></DropdownItem>
+              <DropdownItem
+                label="置顶"
+                onClick={() => commands.placeTop()}
+              ></DropdownItem>
+              <DropdownItem
+                label="置底"
+                onClick={() => commands.placeBottom()}
+              ></DropdownItem>
+              <DropdownItem
+                label="查看JSON"
+                onClick={() => {
+                  $dialog({
+                    title: "查看节点JSON数据",
+                    content: JSON.stringify(block),
+                  });
+                }}
+              ></DropdownItem>
+              <DropdownItem
+                label="替换"
+                onClick={() => {
+                  $dialog({
+                    title: "通过JSON替换节点",
+                    hasFooter: true,
+                    onConfirm(json) {
+                      commands.updateBlock(block, JSON.parse(json));
+                    },
+                  });
+                }}
+              ></DropdownItem>
+            </>
+          );
+        },
+      });
+    };
 
     return () => (
       <div class="editor">
@@ -132,6 +180,7 @@ export default defineComponent({
                   class={block.selected ? "editor-block-selected" : ""}
                   data={block}
                   onmousedown={(e) => blcokMousedown(e, block, index)}
+                  onContextmenu={(e) => onContextmenu(e, block)}
                 />
               ))}
 

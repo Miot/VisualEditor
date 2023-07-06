@@ -94,19 +94,44 @@ export function useCommand(inputData, selectedData) {
   });
 
   registry({
-    name: "updateContainer",
+    name: "updateContainer", // 更新所有节点
     pushQueue: true,
     execute(newValue) {
-      let stete = {
+      const state = {
         before: data.value,
         after: newValue,
       };
       return {
         redo: () => {
-          data.value = stete.after;
+          data.value = state.after;
         },
         undo: () => {
-          data.value = stete.before;
+          data.value = state.before;
+        },
+      };
+    },
+  });
+  registry({
+    name: "updateBlock", // 更新单个节点
+    pushQueue: true,
+    execute(oldBlock, newBlock) {
+      const state = {
+        before: data.value.blocks,
+        after: (() => {
+          let blocks = clone(data.value.blocks);
+          const idx = data.value.blocks.indexOf(oldBlock);
+          if (idx > -1) {
+            blocks.splice(idx, 1, newBlock);
+          }
+          return blocks;
+        })(),
+      };
+      return {
+        redo: () => {
+          data.value.blocks = [...state.after];
+        },
+        undo: () => {
+          data.value = { ...data.value, blocks: state.before };
         },
       };
     },
