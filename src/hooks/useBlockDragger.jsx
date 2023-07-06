@@ -30,6 +30,7 @@ export function useBlockDragger(data, isPreviewing) {
   const clearFocus = () => {
     if (isPreviewing.value) return;
     data.value.blocks.forEach((block) => (block.selected = false));
+    curIndex.value = -1;
   };
 
   // 拖拽所选组件
@@ -64,8 +65,8 @@ export function useBlockDragger(data, isPreviewing) {
           {
             top: 0,
             left: 0,
-            width: data.value.container.width,
-            height: data.value.container.height,
+            width: +data.value.container.width,
+            height: +data.value.container.height,
           },
         ].forEach((block) => {
           const {
@@ -172,5 +173,11 @@ export function useBlockDragger(data, isPreviewing) {
     }
   };
 
-  return { blcokMousedown, clearFocus, markLine, selectedStatus };
+  return {
+    blcokMousedown,
+    clearFocus,
+    lastSelectedBlock,
+    markLine,
+    selectedStatus,
+  };
 }

@@ -27,6 +27,7 @@ export default {
 
 <style>
 .app {
+  font-family: "PingFang SC", Tahoma, Helvetica, Arial, "Hiragino Sans GB", "Microsoft YaHei", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
   position: fixed;
   top: 20px;
   left: 20px;

@@ -1,4 +1,5 @@
 import { events } from "../utils/events";
+
 export function useMenuDragger(containerRef, data) {
   let curComponent = null;
   const dragenter = (e) => {
@@ -17,6 +18,7 @@ export function useMenuDragger(containerRef, data) {
       zIndex: 1,
       type: curComponent.type,
       alignCenter: true,
+      props: {},
     });
   };
   const dragstart = (e, component) => {

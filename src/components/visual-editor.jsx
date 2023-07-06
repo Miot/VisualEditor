@@ -7,6 +7,7 @@ import { useBlockDragger } from "../hooks/useBlockDragger";
 import { useCommand } from "@/hooks/useCommand";
 import { $dialog } from "./layout-dialog";
 import { $dropdown, DropdownItem } from "./layout-dropdown";
+import EditorOperator from "./editor-operator";
 
 export default defineComponent({
   props: {
@@ -37,8 +38,13 @@ export default defineComponent({
     const containerRef = ref(null);
     const { dragstart, dragend } = useMenuDragger(containerRef, data);
     // 拖拽选中画布中的组件
-    const { blcokMousedown, clearFocus, markLine, selectedStatus } =
-      useBlockDragger(data, previewing);
+    const {
+      blcokMousedown,
+      clearFocus,
+      lastSelectedBlock,
+      markLine,
+      selectedStatus,
+    } = useBlockDragger(data, previewing);
     // 顶部菜单
     const { commands } = useCommand(data, selectedStatus);
     const buttons = [
@@ -164,7 +170,13 @@ export default defineComponent({
           })}
         </div>
         <div class="editor-right" v-show={!previewing.value}>
-          右侧
+          <EditorOperator
+            multipleSelected={selectedStatus.value.selected.length > 1}
+            block={lastSelectedBlock.value}
+            data={data.value}
+            updateContainer={commands.updateContainer}
+            updateBlock={commands.updateBlock}
+          ></EditorOperator>
         </div>
         <div class="editor-container">
           <div class="editor-canvas">
@@ -178,7 +190,7 @@ export default defineComponent({
               {data.value.blocks.map((block, index) => (
                 <EditorBlock
                   class={block.selected ? "editor-block-selected" : ""}
-                  data={block}
+                  v-model={block}
                   onmousedown={(e) => blcokMousedown(e, block, index)}
                   onContextmenu={(e) => onContextmenu(e, block)}
                 />
@@ -192,15 +204,13 @@ export default defineComponent({
               )}
             </div>
 
-            <div
-              class="editor-canvas-content"
-              style={containerStyle.value}
-              v-show={previewing.value}
-            >
-              {data.value.blocks.map((block, index) => (
-                <EditorBlock class="editor-block-preview" data={block} />
-              ))}
-            </div>
+            {previewing.value && (
+              <div class="editor-canvas-content" style={containerStyle.value}>
+                {data.value.blocks.map((block) => (
+                  <EditorBlock class="editor-block-preview" v-model={block} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

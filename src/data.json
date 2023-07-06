@@ -1,26 +1,38 @@
 {
   "container": {
     "width": "550",
-    "height": "550"
+    "height": "520"
   },
   "blocks": [
     {
       "top": 100,
       "left": 100,
       "zIndex": 1,
-      "type": "text"
+      "type": "text",
+      "props": {
+        "text": "渲染文本",
+        "size": "16px"
+      }
     },
     {
       "top": 200,
       "left": 100,
       "zIndex": 1,
-      "type": "button"
+      "type": "button",
+      "props": {
+        "text": "渲染按钮",
+        "type": "base",
+        "size": "base"
+      }
     },
     {
       "top": 300,
       "left": 100,
       "zIndex": 1,
-      "type": "input"
+      "type": "input",
+      "props": {
+        "text": ""
+      }
     }
   ]
 }

@@ -177,7 +177,6 @@ export function useCommand(inputData, selectedData) {
           unselected.forEach((block) => (block.zIndex += dur));
         }
         selected.forEach((block) => (block.zIndex = minIndex));
-        console.log(unselected);
         return data.value.blocks;
       })();
       return {
