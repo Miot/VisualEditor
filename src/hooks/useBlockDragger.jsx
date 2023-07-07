@@ -119,6 +119,9 @@ export function useBlockDragger(data, isPreviewing) {
   };
   const moveSelectedBlocks = (e) => {
     let { clientX: moveX, clientY: moveY } = e;
+    const { width: selectedWidth, height: selectedHeight } =
+      lastSelectedBlock.value;
+
     if (!dragState.dragging) {
       dragState.dragging = true;
       events.emit("start"); // 记录拖拽前的位置
@@ -158,8 +161,16 @@ export function useBlockDragger(data, isPreviewing) {
     data.value.blocks
       .filter((block) => block.selected)
       .forEach((block, idx) => {
-        block.top = dragState.startPos[idx].top + durY;
-        block.left = dragState.startPos[idx].left + durX;
+        block.top = Math.min(
+          data.value.container.height - selectedHeight,
+          dragState.startPos[idx].top +
+            Math.max(durY, -dragState.startPos[idx].top)
+        );
+        block.left = Math.min(
+          data.value.container.width - selectedWidth,
+          dragState.startPos[idx].left +
+            Math.max(durX, -dragState.startPos[idx].left)
+        );
       });
   };
   const setSelectedBlocks = (e) => {
@@ -168,7 +179,7 @@ export function useBlockDragger(data, isPreviewing) {
     markLine.x = null;
     markLine.y = null;
     if (dragState.dragging) {
-      events.emit("end");
+      // events.emit("end");
       dragState.dragging = false;
     }
   };

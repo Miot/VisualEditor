@@ -191,6 +191,7 @@ export default defineComponent({
                 <EditorBlock
                   class={block.selected ? "editor-block-selected" : ""}
                   v-model={block}
+                  containerStyle={data.value.container}
                   onMousedown={(e) => blcokMousedown(e, block, index)}
                   onContextmenu={(e) => onContextmenu(e, block)}
                 />

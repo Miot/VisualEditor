@@ -13,6 +13,7 @@ import BlockResize from "./block-resize";
 export default defineComponent({
   props: {
     modelValue: { type: Object },
+    containerStyle: { width: Number, height: Number },
   },
   components: {
     BlockResize,
@@ -52,14 +53,22 @@ export default defineComponent({
     const blockRef = ref(null);
     onMounted(() => {
       const { offsetWidth, offsetHeight } = blockRef.value;
+      const { width: containerWidth, height: containerHeight } =
+        props.containerStyle;
       block.value.width = offsetWidth;
       block.value.height = offsetHeight;
 
-      //  拖拽松手时时居中
+      // 新加入的 拖拽松手时需居中
       if (block.value.alignCenter) {
-        (block.value.left -= offsetWidth / 2),
-          (block.value.top -= offsetHeight / 2),
-          (block.value.alignCenter = false);
+        block.value.alignCenter = false;
+        block.value.left = Math.min(
+          Math.max(0, block.value.left - offsetWidth / 2),
+          containerWidth - offsetWidth
+        );
+        block.value.top = Math.min(
+          Math.max(0, block.value.top - offsetHeight / 2),
+          containerHeight - offsetHeight
+        );
       }
     });
     return () => {

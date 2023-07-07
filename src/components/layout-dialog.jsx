@@ -20,8 +20,12 @@ const DialogComponent = defineComponent({
       state.isShow = false;
     };
     const confirm = () => {
-      state.option.onConfirm(state.option.content);
-      close();
+      try {
+        state.option.onConfirm(state.option.content);
+        close();
+      } catch (error) {
+        alert("⚠️输入内容为非法JSON⚠️");
+      }
     };
     return () => {
       return (
