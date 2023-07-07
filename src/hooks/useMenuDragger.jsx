@@ -18,7 +18,7 @@ export function useMenuDragger(containerRef, data) {
       zIndex: 1,
       type: curComponent.type,
       alignCenter: true,
-      props: {},
+      props: curComponent.defaultOptions, // 默认选项配置
     });
   };
   const dragstart = (e, component) => {

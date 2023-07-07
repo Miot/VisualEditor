@@ -95,21 +95,6 @@ export default defineComponent({
             })
           );
         }
-        if (component && component.model) {
-          content.push(
-            Object.entries(component.model).map(([modelName, label]) => {
-              return (
-                <div class="form-item">
-                  <p class="form-lable">{label}</p>
-                  <input
-                    type="text"
-                    v-model={state.editData.model[modelName]}
-                  ></input>
-                </div>
-              );
-            })
-          );
-        }
       }
 
       if (props.multipleSelected) return <></>;

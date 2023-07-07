@@ -36,6 +36,10 @@ registerConfig.register({
       { label: "18px", value: "18px" },
     ]),
   },
+  defaultOptions: {
+    text: "渲染文本",
+    size: "16px"
+  }
 });
 registerConfig.register({
   label: "按钮",
@@ -67,6 +71,11 @@ registerConfig.register({
       { label: "大", value: "large" },
     ]),
   },
+  defaultOptions: {
+    text: "渲染按钮",
+    type: "base",
+    size: "base"
+  }
 });
 registerConfig.register({
   label: "输入框",
@@ -85,4 +94,7 @@ registerConfig.register({
   props: {
     text: createInputProp("输入框文本"),
   },
+  defaultOptions: {
+    text: "",
+  }
 });
