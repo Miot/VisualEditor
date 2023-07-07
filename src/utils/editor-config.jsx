@@ -23,7 +23,9 @@ registerConfig.register({
   label: "文本",
   preview: () => "预览文本",
   render: ({ props }) => (
-    <span style={{ fontSize: props.size }}>{props.text || "渲染文本"}</span>
+    <span style={{ fontSize: props.size, userSelect: "none" }}>
+      {props.text || "渲染文本"}
+    </span>
   ),
   type: "text",
   props: {
@@ -37,9 +39,16 @@ registerConfig.register({
 });
 registerConfig.register({
   label: "按钮",
+  resize: {
+    width: true,
+    height: true,
+  },
   preview: () => <button>预览按钮</button>,
-  render: ({ props }) => (
-    <button class={`button-${props.type} button-${props.size}`}>
+  render: ({ props, size }) => (
+    <button
+      class={`button-${props.type} button-${props.size}`}
+      style={{ height: size.height + "px", width: size.width + "px" }}
+    >
       {props.text || "渲染按钮"}
     </button>
   ),
@@ -61,9 +70,16 @@ registerConfig.register({
 });
 registerConfig.register({
   label: "输入框",
+  resize: {
+    width: true,
+  },
   preview: () => <input placeholder="预览输入框"></input>,
-  render: ({ props }) => (
-    <input placeholder="渲染输入框" v-model={props.text}></input>
+  render: ({ props, size }) => (
+    <input
+      placeholder="渲染输入框"
+      v-model={props.text}
+      style={{ width: size.width + "px" }}
+    ></input>
   ),
   type: "input",
   props: {

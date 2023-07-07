@@ -184,14 +184,14 @@ export default defineComponent({
               class="editor-canvas-content"
               style={containerStyle.value}
               ref={containerRef}
-              onmousedown={clearFocus}
+              onMousedown={clearFocus}
               v-show={!previewing.value}
             >
               {data.value.blocks.map((block, index) => (
                 <EditorBlock
                   class={block.selected ? "editor-block-selected" : ""}
                   v-model={block}
-                  onmousedown={(e) => blcokMousedown(e, block, index)}
+                  onMousedown={(e) => blcokMousedown(e, block, index)}
                   onContextmenu={(e) => onContextmenu(e, block)}
                 />
               ))}

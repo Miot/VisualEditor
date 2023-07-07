@@ -4,12 +4,12 @@
   &-left, &-right {
     position: absolute;
     width: 270px;
-    border: 3px solid yellowgreen;
     top: 0;
     bottom: 0;
   }
   &-left {
     left: 0;
+    border: 2px solid gray;
     .preview-item {
       position: relative;
       height: 100px;
@@ -24,12 +24,12 @@
       box-sizing: border-box;
       cursor: move;
       user-select: none;
-      border: 1px goldenrod solid;
+      border: 1px gray solid;
       .name {
         position: absolute;
         top: 0;
         left: 0;
-        background-color: gray;
+        background-color: rgba(0, 0, 0, 0.08);
         padding: 5px;
       }
       .component {
@@ -58,7 +58,6 @@
     right: 280px;
     left: 280px;
     display: flex;
-    border: 2px solid gray;
     &-button {
       cursor: pointer;
       height: 60px;
@@ -66,8 +65,9 @@
       line-height: 60px;
       text-align: center;
       user-select: none;
+      border-bottom: 2px solid gray;
       &+& {
-        margin-left: 5px;
+        margin-left: 10px;
       }
       &:hover {
         background-color: rgba(0, 0, 0, 0.2);
@@ -87,7 +87,7 @@
     &-content {
       position: relative;
       margin: 20px auto;
-      border: 3px solid yellowgreen;
+      border: 2px solid gray;
       .line {
         &-x {
           position: absolute;
@@ -107,7 +107,7 @@
   &-block {
     position: absolute;
     box-sizing: border-box;
-    &::after {
+    &::before {
       content: '';
       position: absolute;
       top: 0;
@@ -116,11 +116,11 @@
       bottom: 0;
     }
     &-selected {
-      &::after {
+      &::before {
         border: 2px red dashed;
       }
     }
-    &-preview::after {
+    &-preview::before {
       display: none;
     }
   }
@@ -160,6 +160,55 @@
       &-large {
         font-size: 115%;
       }
+    }
+  }
+  .block-resize {
+    cursor: pointer;
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: red;
+    z-index: 1000;
+    &::before {
+      position: absolute;
+      left: -4px;
+      right: -4px;
+      top: -4px;
+      bottom: -4px;
+      display: block;
+      content: '';
+    }
+    &-top {
+      top: -2px;
+      left: calc(50% - 2px);
+      &-left {
+        top: -2px;
+        left: -2px;
+      }
+      &-right {
+        top: -2px;
+        right: -2px;
+      }
+    }
+    &-bottom {
+      bottom: -2px;
+      left: calc(50% - 2px);
+      &-left {
+        bottom: -2px;
+        left: -2px;
+      }
+      &-right {
+        bottom: -2px;
+        right: -2px;
+      }
+    }
+    &-left {
+      left: -2px;
+      top: calc(50% - 2px);
+    }
+    &-right {
+      right: -2px;
+      top: calc(50% - 2px);
     }
   }
 }

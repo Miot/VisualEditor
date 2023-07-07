@@ -8,10 +8,14 @@ import {
   computed,
 } from "vue";
 import clone from "nanoclone";
+import BlockResize from "./block-resize";
 
 export default defineComponent({
   props: {
     modelValue: { type: Object },
+  },
+  components: {
+    BlockResize,
   },
   emits: ["update:modelValue"],
   setup(props, ctx) {
@@ -61,12 +65,25 @@ export default defineComponent({
     return () => {
       const component = config.componentMap[block.value.type];
       const renderComponent = component?.render({
+        size: block.value.hasResize
+          ? { width: block.value.width, height: block.value.height }
+          : {},
         props: block.value.props,
       });
-
+      const { width, height } = component.resize || {};
+      const updateBlock = (newVal) => {
+        block.value = { ...newVal };
+      };
       return (
         <div class="editor-block" style={blockStyles.value} ref={blockRef}>
           {renderComponent}
+          {block.value.selected && (width || height) && (
+            <BlockResize
+              block={block}
+              component={component}
+              onSetBlock={updateBlock}
+            ></BlockResize>
+          )}
         </div>
       );
     };
